@@ -8,16 +8,16 @@ This program computes spcetropolarimetry.
 ### Instructions
 * Set `spectraSuite` (or whatever) to `Scans to average`: as many as you have peitince for (depends on the integration time), `Boxcar width`: 0, `Strobe/light enable`: false, `Electric dark correction`: false, `Nonlinearity correction`: false, `Stray light correction`: false.
 * Make sure you set an integration time such that the maximum possible value in the wavelength interval of interest is not saturated but isn't too low either (play with the Glan–Thompson and Fresnel rhomb to make sure the integration time is not too high). 
-* Set the Glan–Thompson (l) and Fresnel rhomb (c) to the angles according to the following:
+* Set the Glan–Thompson (l), Fresnel rhomb (c), and name the saved files according to the following:
 
-l|c
----|---
-315|0
-0|0
-45|0
-90|0
-0|315
-0|45
+l|c|file name
+---|---|---
+315|0| l315c0.txt
+0|0| l0c0.txt
+45|0| l45c0.txt
+90|0| l90c0.txt
+0|315| l0c315.txt
+0|45| l0c45.txt
 
 the last two are required if you want to know the degree of circular polarization.
 * Record exactly 7 or 5 spectra and name them according to: `l315c0.txt`, `l0c0.txt`, `l45c0.txt`, `l90c0.txt` [and `l0c315.txt`, `l0c45.txt`], and `dark.txt`. Where `dark.txt` is an additional spectrum without the light source (but with the same integration time!). All these spectra *must* have the same integration time.
