@@ -13,4 +13,4 @@ This program computes spctropolarimetry.
 5. when done, double-click the `Spectopolar` icon <img src="src/icon.png" alt="alt text" width="25" height="25">.
 6. the csv file and an additioal pdf plot of the results will be in the same folder where you saved the spectrum files.
 
-![](./src/example.png)
+![](src/example.png)
