@@ -1,0 +1,22 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=newest}
+\pgfplotsset{line/.style={no marks,red,each nth point={10},smooth}}
+\begin{document}
+\begin{tikzpicture}
+	\begin{groupplot}[group style={group size=2 by 2,x descriptions at=edge bottom, horizontal sep=2cm,vertical sep=2cm}, height=77mm,width=128mm,xmin=400,xmax=700,xlabel=$\lambda$ (nm),enlargelimits=true]
+
+	\nextgroupplot[ymin=0,ylabel=I]
+		\addplot[line] table[x=wl,y=I] {\PATH/polar.csv};
+	\nextgroupplot[ymin=0, ymax=1,ylabel=DoLP]
+		\addplot[line] table[x=wl,y=dolp] {\PATH/polar.csv};
+	\nextgroupplot[ymin=-90, ymax=90,ylabel=AoP ($^{\circ}$)]
+		\addplot[line] table[x=wl,y=aop] {\PATH/polar.csv};
+	\nextgroupplot[ymin=-1, ymax=1,ylabel=DoCP]
+		\addplot[line] table[x=wl,y=docp] {\PATH/polar.csv};
+
+	\end{groupplot}
+
+\end{tikzpicture}
+\end{document}

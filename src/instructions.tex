@@ -1,0 +1,28 @@
+\title{Instructions for how to use this \texttt{polarimetryLab} program}
+\author{Yakir Gagnon}
+\date{\today}
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+This program computes polarimetry images.
+
+\paragraph{Outline}
+The program takes the six filtered images (i.e.\ anti-diagonal, vertical, diagonal, horizontal, lefthand circular, and righthand circular) and produces five polarization images that describe the RGB, intensity, degree of linear polarization, angle of polarization, and degree of circular polarization. 
+
+\section{Running the program}
+\begin{enumerate}
+	\item Photograph your subject through the following filters in the following order: anti-diagonal, vertical, diagonal, horizontal, and if you want circular polarization as well: lefthand circular, and righthand circular (see Section \ref{shooting} for detailed instructions for how to shoot these images). 
+	\item Put (copy/move) these images in the folder \texttt{raw}, making sure you have only 4 or 6 images (depending if you want circular polarization or not) in the \texttt{raw} folder.
+	\item Double click the icon \includegraphics[height=2ex]{icon}.
+	\item Wait for the "Done" message.
+	\item The polarimetry images are now in the folder \texttt{polarimetry}.
+	\item Take (copy/move) the resulting images from the \texttt{polarimetry} folder because any subsequent runs will erase anything in the \texttt{polarimetry} folder.
+\end{enumerate}
+
+\section{Photographing}\label{shooting}
+For the best results use the D300 Nikon with the filter rings attached to the lens. 
+
+\end{document}
