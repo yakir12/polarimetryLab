@@ -33,14 +33,14 @@ The last two are required if you want to know the degree of circular polarizatio
 ## Photopolar
 This program computes photopolarimetry.
 
-**Outline** The program takes the six filtered images (i.e.\ anti-diagonal, vertical, diagonal, horizontal, lefthand circular, and righthand circular) and produces five polarization images that describe the RGB, intensity, degree of linear polarization, angle of polarization, and degree of circular polarization. 
+**Outline** The program takes the six filtered images (i.e. anti-diagonal, vertical, diagonal, horizontal, lefthand circular, and righthand circular) and produces five polarization images that describe the RGB, intensity, degree of linear polarization, angle of polarization, and degree of circular polarization. 
 
 ### Instructions
-* Photograph your subject through the following filters in the following order: anti-diagonal, vertical, diagonal, horizontal, and if you want circular polarization as well: lefthand circular, and righthand circular (see Section \ref{shooting} for detailed instructions for how to shoot these images). 
-* Put (copy/move) these images in the folder \texttt{raw}, making sure you have only 4 or 6 images (depending if you want circular polarization or not) in the \texttt{raw} folder.
-* Double click the icon \includegraphics[height=2ex]{icon}.
+* Photograph your subject through the following filters in the following order: anti-diagonal, vertical, diagonal, horizontal, and if you want circular polarization as well: lefthand circular, and righthand circular. 
+* Put (copy/move) these images in the folder `raw`, making sure you have only 4 or 6 images (depending if you want circular polarization or not) in the `raw` folder.
+* Double click the icon.
 * Wait for the "Done" message.
-* The polarimetry images are now in the folder \texttt{polarimetry}.
-* Take (copy/move) the resulting images from the \texttt{polarimetry} folder because any subsequent runs will erase anything in the \texttt{polarimetry} folder.  
+* The polarimetry images are now in the folder 
+* Take (copy/move) the resulting images from the folder because any subsequent runs will erase anything in the folder.  
 * For the best results use the D300 Nikon with the filter rings attached to the lens. 
 
