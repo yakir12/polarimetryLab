@@ -10,6 +10,6 @@ This program computes spctropolarimetry.
 2. make sure you set an intigration time such that the maximum possible value in the wavelength interval of intrest is not saturated but isn't too low either. 
 3. save the files as tab-delimited with a header.
 4. make sure the appartus is pointing at the specimen and nothing else.
-5. when done, double-click the Spectopolar icon <img src="src/icon.png" alt="alt text" style="width:100;height:100">.
+5. when done, double-click the Spectopolar icon <img src="src/icon.png" alt="alt text" style="width:25;height:25">.
 6. the csv file and an additioal pdf plot of the results will be in the same folder where you saved the spectrum files.
 
