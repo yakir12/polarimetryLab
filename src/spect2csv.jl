@@ -46,7 +46,7 @@ function gety(s::IO)
 	y = parse(Float64,strip(yt))
 	return y
 end
-function spect2circ(wl,dark,nwl)
+function spect2circ(wl::Vector{Float64},dark::Vector{Float64},nwl::Int)
 	l315c0 = open(joinpath(path,"l315c0.txt"),"r")
 	l0c0 = open(joinpath(path,"l0c0.txt"),"r")
 	l45c0 = open(joinpath(path,"l45c0.txt"),"r")
@@ -74,7 +74,7 @@ function spect2circ(wl,dark,nwl)
 	end
 	map(close,[l315c0, l0c0, l45c0, l90c0, l0c315, l0c45, polar])
 end
-function spect2lin(wl,dark,nwl)
+function spect2lin(wl::Vector{Float64},dark::Vector{Float64},nwl::Int)
 	l315c0 = open(joinpath(path,"l315c0.txt"),"r")
 	l0c0 = open(joinpath(path,"l0c0.txt"),"r")
 	l45c0 = open(joinpath(path,"l45c0.txt"),"r")
