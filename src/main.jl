@@ -2,7 +2,7 @@ path = strip(readall(`zenity --file-selection --directory --title="Choose the fo
 @async @spawn run(`zenity --timeout 2 --info --text="Calculating..."`)
 include("spect2csv.jl")
 spect2csv(path)
-readall(`pdflatex -interaction=nonstopmode --shell-escape -output-directory=$(tempdir()) "\\def\\PATH{$path} \\input{plot.tex}"`)
+readall(`pdflatex -interaction=nonstopmode --shell-escape -output-directory=$(tempdir()) "\def\PATH{$path} \input{plot.tex}"`)
 mv(joinpath(tempdir(),"plot.pdf"),joinpath(path,"plot.pdf"),remove_destination=true)
 run(detach(`zenity --timeout 2 --info --text="Done!"`))
 exit()
