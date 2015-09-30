@@ -1,8 +1,0 @@
-path = strip(readall(`zenity --file-selection --directory --title="Choose the folder with the polarimetry images" --filename=$(homedir())/`))
-@async @spawn run(`zenity --timeout 2 --info --text="Calculating..."`)
-include("spect2csv.jl")
-t = spect2csv(path)
-readall(`pdflatex -interaction=nonstopmode --shell-escape -output-directory=$(tempdir()) "\def\PATH{$path} \input{plot$t.tex}"`)
-mv(joinpath(tempdir(),"plot$t.pdf"),joinpath(path,"plot.pdf"),remove_destination=true)
-run(detach(`zenity --timeout 2 --info --text="Done!"`))
-exit()
