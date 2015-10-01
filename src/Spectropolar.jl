@@ -4,25 +4,29 @@ using PyCall, ASCIIPlots
 
 export spectropolar
 
-@pyimport oceanoptics
+@pyimport seabreeze
+seabreeze.use("pyseabreeze")
+@pyimport seabreeze.spectrometers as sb
 
 const TAKES = [:l315c0, :l0c0, :l45c0, :l90c0, :l0c315, :l0c45, :dark]
 
 function getit(wl::Vector{Float64},S::PyCall.PyObject)
-	maxx = 2^12 - 1
-	minit = S[:_min_integration_time]
-	S[:integration_time](minit)
+	maxy = Float64(2^12 - 1)
+	minit = S[:minimum_integration_time_micros]
+	S[:integration_time_micros](minit)
 	itxt = string(minit)
+	x = [wl[1:2];wl]
 	while ~isalpha(itxt)
-		it = parse(Float64,itxt)
+		it = parse(Int,itxt)
 		if it < minit
 			it = minit
 			println("Integration time cannot be smaller than $minit !!!")
 		end
-		S[:integration_time](it)
+		S[:integration_time_micros](it)
 		sleep(.1)
-		display(scatterplot([wl[1];wl],[maxx;S[:intensities]()],sym = '.'))
-		println("Input the integration time in seconds (input some letter when done):")
+		y = [0.;maxy;S[:intensities](correct_dark_counts=true, correct_nonlinearity=true)]
+		display(scatterplot(x,y,sym = '.'))
+		println("Input the integration time in microseconds (input some letter when done):")
 		itxt = strip(readline())
 		if isempty(itxt) 
 			itxt = string(it)
@@ -35,7 +39,7 @@ function getdata(wl::Vector{Float64},nwl::Int,S::PyCall.PyObject)
 	for i in TAKES
 		println("Set apparatus to $i and press enter when ready...")
 		readline()
-		y = S[:intensities]()
+		y = S[:intensities](correct_dark_counts=true, correct_nonlinearity=true)
 		display(scatterplot(wl,y,sym = '.'))
 		for j in 1:nwl
 			x[j][i] = y[j]
@@ -62,7 +66,8 @@ end
 
 function spectropolar()
 
-	S = oceanoptics.get_a_random_spectrometer()
+	devices = sb.list_devices()
+	S = sb.Spectrometer(devices[1])
 	wl = S[:wavelengths]()
 	getit(wl,S)
 	nwl = length(wl)
