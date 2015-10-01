@@ -8,14 +8,24 @@ This program computes spcetropolarimetry.
 **Outline** The program takes the six [or four] filtered spectra (i.e. anti-diagonal, vertical, diagonal, horizontal, [lefthand circular, and righthand circular]) and produces a CSV file with the intensity, degree of linear polarization, angle of polarization, [and degree of circular polarization] per wavelength.
 
 ### Instructions
-* Place the polarization apparatus infront of the sample you want to measure. 
+* Place the polarization apparatus in front of the sample you want to measure. 
 * Check to see that the apparatus is looking directly and only at the sample.
 * Double-click the `Spectopolar` icon <img src="src/icon.png" width="25" height="25"> on the desktop.
 * Input the desired integration time in seconds and press enter.
 * Make sure you set an integration time such that the maximum possible value in the wavelength interval of interest is not saturated but isn't too low either (play with the Glan–Thompson and Fresnel rhomb to make sure the integration time is not too high). 
 * Input some non-numerical letter (`a`-`z`) when you're happy with the integration time.
 * Input the number of spectra to average: as many as you have patience for (depends on the integration time).
-* Set the Glan–Thompson (l) and Fresnel rhomb (c) according to the prompt. Press enter when done. 
+* Set the Glan–Thompson (l) and Fresnel rhomb (c) according to the prompt (see table below). Press enter when done. 
+
+l  |c  
+---|---
+315|0  
+0  |0  
+45 |0  
+90 |0  
+0  |315
+0  |45 
+
 * "dark" is an additional spectrum without the light source (but with the same integration time!). 
 * The CSV file and an additional PDF plot of the results will be in the `home` directory (these are named by the time stamp of when they were created).
 
