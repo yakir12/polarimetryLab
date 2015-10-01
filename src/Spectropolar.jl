@@ -9,7 +9,8 @@ export spectropolar
 const TAKES = [:l315c0, :l0c0, :l45c0, :l90c0, :l0c315, :l0c45, :dark]
 
 function getit(wl::Vector{Float64},S::PyCall.PyObject)
-	maxx = 2^12 - 1
+	maxy = Float64(2^12 - 1)
+	x = [wl[1:2];wl]
 	minit = S[:_min_integration_time]
 	S[:integration_time](minit)
 	itxt = string(minit)
@@ -21,7 +22,8 @@ function getit(wl::Vector{Float64},S::PyCall.PyObject)
 		end
 		S[:integration_time](it)
 		sleep(.1)
-		display(scatterplot([wl[1];wl],[maxx;S[:intensities]()],sym = '.'))
+		y = [0.0;maxy;S[:intensities]()]
+		display(scatterplot(x,y,sym = '.'))
 		println("Input the integration time in seconds (input some letter when done):")
 		itxt = strip(readline())
 		if isempty(itxt) 
