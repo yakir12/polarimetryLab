@@ -65,6 +65,7 @@ end
 function spectropolar()
 
 	S = oceanoptics.get_a_random_spectrometer()
+	run(`clear`)
 	wl = S[:wavelengths]()
 	getit(wl,S)
 	nwl = length(wl)
@@ -81,7 +82,13 @@ function spectropolar()
 	end
 	readall(`pdflatex -interaction=nonstopmode --shell-escape -output-directory=$(tempdir()) "\def\NAME{$name} \input{plot.tex}"`)
 	mv(joinpath(tempdir(),"plot.pdf"),"$name.pdf",remove_destination=true)
+	run(`clear`)
 	println("Done, the results are in $name.csv and $name.pdf.")
+	println("Closing in 3...")
+	for i = 1:3
+		sleep(1)
+		print(3 - i,"...")
+	end
 end
 
 end
