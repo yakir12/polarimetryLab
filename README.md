@@ -18,10 +18,10 @@ This program computes spcetropolarimetry.
 * Input the number of spectra to average: as many as you have patience for (depends on the integration time).
 * Set the linear (l) dial and the circular (c) dial according to the prompt (see table below). Press enter when done. 
 
-Fliter       |code|anti-diagonal|vertical|diagonal|horizontal|lefthand circular|righthand circular
----          |--- |---          |---     |---     |---       |---              |---               
-Glan–Thompson|l   |315          |0       |45      |90        |0                |0
-Fresnel rhomb|c   |0            |0       |0       |0         |315              |45
+dial    |code|anti-diagonal|vertical|diagonal|horizontal|lefthand circular|righthand circular
+---     |--- |---          |---     |---     |---       |---              |---
+linear  |l   |315          |0       |45      |90        |0                |0
+circular|c   |0            |0       |0       |0         |315              |45
 
 ![](images/topview.JPG?raw=true)
 * "dark" is an additional spectrum without the light source (but with the same integration time!). 
