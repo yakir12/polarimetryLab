@@ -30,17 +30,23 @@ function getit(wl::Vector{Float64},S::PyCall.PyObject)
 			itxt = string(it)
 		end
 	end
+	println("How many spectra do you want to average?")
+	mutxt = strip(readline())
+	mu = parse(Int,mutxt)
+	return mu
 end
 
-function getdata(wl::Vector{Float64},nwl::Int,S::PyCall.PyObject)
+function getdata(wl::Vector{Float64},nwl::Int,S::PyCall.PyObject,mu::Int)
 	x = [[x::Symbol => 0.0 for x in TAKES]::Dict{Symbol,Float64} for i = 1:nwl]
 	for i in TAKES
 		println("Set apparatus to $i and press enter when ready...")
 		readline()
-		y = S[:intensities]()
-		display(scatterplot(wl,y,sym = '.'))
-		for j in 1:nwl
-			x[j][i] = y[j]
+		for l = 1:mu
+			y = S[:intensities]()
+			display(scatterplot(wl,y,sym = '.'))
+			for j in 1:nwl
+				x[j][i] += y[j]/mu
+			end
 		end
 	end
 	return x
@@ -67,9 +73,9 @@ function spectropolar()
 	S = oceanoptics.get_a_random_spectrometer()
 	run(`clear`)
 	wl = S[:wavelengths]()
-	getit(wl,S)
+	mu = getit(wl,S)
 	nwl = length(wl)
-	x = getdata(wl,nwl,S)
+	x = getdata(wl,nwl,S,mu)
 	name = joinpath(homedir(),string(now()))
 	open("$name.csv","w") do o
 		println(o,"wl\t",join(TAKES,'\t'), "s0\ts1\ts2\ts3\tI\tdolp\taop\tdocp")
