@@ -84,10 +84,10 @@ function spectropolar()
 	mv(joinpath(tempdir(),"plot.pdf"),"$name.pdf",remove_destination=true)
 	run(`clear`)
 	println("Done, the results are in $name.csv and $name.pdf.")
-	println("Closing in 3...")
-	for i = 1:3
+	println("Closing in 5...")
+	for i = 1:5
 		sleep(1)
-		print(3 - i,"...")
+		print(5 - i,"...")
 	end
 end
 
