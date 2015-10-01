@@ -17,14 +17,10 @@ This program computes spcetropolarimetry.
 * Input the number of spectra to average: as many as you have patience for (depends on the integration time).
 * Set the Glan–Thompson (l) and Fresnel rhomb (c) according to the prompt (see table below). Press enter when done. 
 
-l  |c  
----|---
-315|0  
-0  |0  
-45 |0  
-90 |0  
-0  |315
-0  |45 
+Fliter       |code|anti-diagonal|vertical|diagonal|horizontal|lefthand circular|righthand circular
+---
+Glan–Thompson|l   |315          |0       |45      |90        |0                |0
+Fresnel rhomb|c   |0            |0       |0       |0         |315              |45
 
 * "dark" is an additional spectrum without the light source (but with the same integration time!). 
 * The CSV file and an additional PDF plot of the results will be in the `home` directory (these are named by the time stamp of when they were created).
