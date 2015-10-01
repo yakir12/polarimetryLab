@@ -13,7 +13,7 @@ This program computes spcetropolarimetry.
 * Double-click the `Spectopolar` icon <img src="src/icon.png" width="25" height="25"> on the desktop.
 * Input the desired integration time in seconds and press enter.
 * Make sure you set an integration time such that the maximum possible value in the wavelength interval of interest is not saturated but isn't too low either (play with the Glan–Thompson and Fresnel rhomb to make sure the integration time is not too high). 
-* Input some non-numerical letter ('a'--'z') when you're happy with the integration time.
+* Input some non-numerical letter (`a`-`z`) when you're happy with the integration time.
 * Input the number of spectra to average: as many as you have patience for (depends on the integration time).
 * Set the Glan–Thompson (l) and Fresnel rhomb (c) according to the prompt. Press enter when done. 
 * "dark" is an additional spectrum without the light source (but with the same integration time!). 
