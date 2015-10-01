@@ -16,13 +16,14 @@ This program computes spcetropolarimetry.
 * Make sure you set an integration time such that the maximum possible value in the wavelength interval of interest is not saturated but isn't too low either (play with the Glan–Thompson and Fresnel rhomb to make sure the integration time is not too high). 
 * Input some non-numerical letter (`a`-`z`) when you're happy with the integration time.
 * Input the number of spectra to average: as many as you have patience for (depends on the integration time).
-* Set the Glan–Thompson (l) and Fresnel rhomb (c) according to the prompt (see table below). Press enter when done. 
+* Set the linear (l) dial and the circular (c) dial according to the prompt (see table below). Press enter when done. 
 
 Fliter       |code|anti-diagonal|vertical|diagonal|horizontal|lefthand circular|righthand circular
 ---          |--- |---          |---     |---     |---       |---              |---               
 Glan–Thompson|l   |315          |0       |45      |90        |0                |0
 Fresnel rhomb|c   |0            |0       |0       |0         |315              |45
 
+![](images/topview.JPG?raw=true)
 * "dark" is an additional spectrum without the light source (but with the same integration time!). 
 * The CSV file and an additional PDF plot of the results will be in the `home` directory (these are named by the time stamp of when they were created).
 
