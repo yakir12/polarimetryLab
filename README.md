@@ -8,7 +8,8 @@ This program computes spcetropolarimetry.
 **Outline** The program takes the six [or four] filtered spectra (i.e. anti-diagonal, vertical, diagonal, horizontal, [lefthand circular, and righthand circular]) and produces a CSV file with the intensity, degree of linear polarization, angle of polarization, [and degree of circular polarization] per wavelength.
 
 ### Instructions
-* Place the polarization apparatus in front of the sample you want to measure. 
+* Place the polarization apparatus in front of the sample you want to measure (you'll need the laptop, USB cable, spectrometer, fiber optic, and apparatus):
+![](images/sideview.JPG)
 * Check to see that the apparatus is looking directly and only at the sample.
 * Double-click the `Spectopolar` icon <img src="src/icon.png" width="25" height="25"> on the desktop.
 * Input the desired integration time in seconds and press enter.
