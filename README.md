@@ -18,7 +18,7 @@ This program computes spcetropolarimetry.
 * Set the Glan–Thompson (l) and Fresnel rhomb (c) according to the prompt (see table below). Press enter when done. 
 
 Fliter       |code|anti-diagonal|vertical|diagonal|horizontal|lefthand circular|righthand circular
----
+---          |--- |---          |---     |---     |---       |---              |---               
 Glan–Thompson|l   |315          |0       |45      |90        |0                |0
 Fresnel rhomb|c   |0            |0       |0       |0         |315              |45
 
