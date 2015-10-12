@@ -1,140 +1,108 @@
 using Winston, PyCall, Reactive
-@pyimport oceanoptics
-S = oceanoptics.get_a_random_spectrometer()
-wl = S[:wavelengths]()
-maxy = Float64(2^12 - 1)
-minit = S[:_min_integration_time]
-S[:integration_time](minit)
-
-function _plotit(_)
-	y = S[:intensities]()
-	p = plot(wl,y)
-	ylim(0.0,maxy)
-	display(p)
+@pyimport seabreeze
+seabreeze.use("pyseabreeze")
+@pyimport seabreeze.spectrometers as sb
+devices = sb.list_devices()
+S = sb.Spectrometer(devices[1])
+const MINIT = 300000#S[:minimum_integration_time_micros]
+S[:integration_time_micros](MINIT)
+const MAXY = 2^12 - 1
+const M = 1.1MAXY
+const m = MAXY - M
+const WL = S[:wavelengths]()
+const NWL = length(WL)
+c0 = Channel{Array{Float64,1}}(1)
+I = Channel{Array{Float64,1}}(1)
+global MU = 3
+global IT = copy(MINIT)
+it = Channel{Int}(1)
+function setit()
+	x = take!(it)
+	IT = x
+	S[:integration_time_micros](x)
 end
-it = Input(minit)
-function difference(prev, x)
-    prev_diff, prev_val = prev
-    # x becomes prev_val in the next call
-    return (x-prev_val, x)
+put!(it,MINIT)
+function fetchI()
+	while true
+		sleep(0)
+		isready(it) && setit()
+		y = S[:intensities]()
+		put!(c0,y)
+	end
 end
-notchangeit = lift(x->x[1] == 0, foldl(difference, (0.0, 0.0), it))
-function changeit(x)
-	push!(it,x)
-	S[:integration_time](x)
-	sleep(x)
-	push!(it,x)
+c1 = Channel{Array{Float64,1}}(1)
+put!(c1,rand(NWL))
+function meanI()
+	mu = zeros(NWL)
+	for i = 1:MU
+		tmp = take!(c0)
+		for j = 1:NWL
+			mu[j] += tmp[j]/MU
+		end
+	end
+	take!(c1)
+	put!(c1,mu)
 end
-lift(_plotit,fpswhen(notchangeit,30))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function plotit()
 	while true
-		@async _plotit()
-		sleep(1/30)
-	end
-end
-function changeit(x)
-	S[:integration_time](x)
-	sleep(x)
-end
-
-@schedule plotit()
-
-@schedule changeit(0.01)
-
-
-consume(
-
-function _changeit(x,itchanged)
-	S[:integration_time](x)
-	sleep(x)
-end
-itchanged = Condition()
-function a()
-	while true
-		wait(itchanged)
-		y = S[:intensities]()
-		produce(y)
-	end
-end
-b = Task(a)
-function c()
-	for y in b
-		@async begin 
-			p = plot(wl,y)
-			ylim(0.0,maxy)
-			display(p)
-		end
-		sleep(1/30)
-	end
-end
-function changeit(it)
-	d = Task(() -> _changeit(it))
-	yieldto(d)
-end
-_changeit(minit)
-
-@spawn c()
-
-
-
-using Winston, PyCall
-@pyimport oceanoptics
-S = oceanoptics.get_a_random_spectrometer()
-wl = S[:wavelengths]()
-maxy = Float64(2^12 - 1)
-minit = S[:_min_integration_time]
-global it = [minit]
-S[:integration_time](it[1])
-function c()
-	while true
-		sleep(.1)
-		S[:integration_time](it[1])
-		sleep(it[1])
-		y = S[:intensities]()
-		p = plot(wl,y)
-		ylim(0.0,maxy)
+		meanI()
+		y = fetch(c1)
+		p = plot(WL,y)
+		ylim(m,M)
 		display(p)
 	end
 end
+@schedule fetchI()
+@schedule plotit()
 
-@spawn c()
-
-
-
-
-_f() = println(rand())
-f() = produce(_f())
-a = Task(f)
-schedule(a)
+put!(it,3000000)
 
 
 
-using Winston, PyCall, Reactive
-@pyimport oceanoptics
-S = oceanoptics.get_a_random_spectrometer()
-wl = S[:wavelengths]()
-maxy = Float64(2^12 - 1)
-minit = S[:_min_integration_time]
-nwl = length(wl)
 
-sensor_input = lift((delta) -> plot(S[:intensities]()), fps(1.0))
+
+
+
+
+
+
+
+
+
+using PyCall
+@pyimport seabreeze
+seabreeze.use("pyseabreeze")
+@pyimport seabreeze.spectrometers as sb
+devices = sb.list_devices()
+S = sb.Spectrometer(devices[1])
+S[:integration_time_micros](300000)
+c0 = Channel{Array{Float64,1}}(1)
+function fetchI()
+	while true
+		sleep(0)
+		y = S[:intensities]()
+		put!(c0,y)
+	end
+end
+function plotit()
+	while true
+		take!(c0)
+	end
+end
+@schedule fetchI()
+@schedule plotit()
+
+
+
+
+
+function mockfunction()
+	sleep(rand()*IT*1e-6)
+	return rand(2048)
+end
+
+y = mockfunction()
+
+
+
+
