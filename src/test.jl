@@ -6,7 +6,7 @@ opts = (true, false, 7, 90, 82, 2, 3, 25)
 @sync x = get_data(opts,fnames)
 I, dolp, aop, docp = convert2polar(x);
 
-		colorimg = imread("$assets/RGB.jpg")
+#=		colorimg = imread("$assets/RGB.jpg")
 		aopimg = convert(Image, aop)
 		Iimg = convert(Image,I)
 		dolpimg = convert(Image,dolp)
@@ -21,6 +21,6 @@ I, dolp, aop, docp = convert2polar(x);
 		map(x -> println(size(x)), (colorimg, Iimg, dolpimg, aop, docpimg)) 
 
 		img = cat(1,colorimg, Iimg, dolpimg, aop, docpimg) 
-		imwrite(img, "$assets/all.jpg")
+		imwrite(img, "$assets/all.jpg")=#
 
 
