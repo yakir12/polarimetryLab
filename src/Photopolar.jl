@@ -79,18 +79,17 @@ function convert2polar(x::SharedArray{UInt16,3})
 	aop = zeros(Int,sz)
 	docp = zeros(Int,sz)
 	m = zeros(6)
+	M = 0.0
 	for i = 1:prod(sz)
 		for j = 1:6
 			m[j] = (x[j,i] + 1.)/(typemax(UInt16) + 1.)
 		end
+		M += sum(m)
 		p = Polar(m[1], m[2], m[3], m[4], m[5], m[6])
 		I[i], dolp[i], aop[i], docp[i] = normalize(p)
 	end
+	println(round(Int,M))
 	prop = Dict(:spatialorder => ["x","y"], :colorspace => "RGB", :pixelspacing => [1,1])
-	Iimg = ImageCmap(I, linspace(RGB(0,0,0),RGB(1,1,1),N); prop...)
-	imwrite(Iimg,"test.png")
-	test = ImageCmap(rand(1:N,500,500), linspace(RGB(0,0,0),RGB(1,1,1),N); prop...)
-	imwrite(test,"test2.png")
 	colorbar = repeat(reshape(collect(round(Int,linspace(N,1,sz[2]))),1,sz[2]),outer = [round(Int,0.1sz[1]),1])
 	row,col,ind = colorwheel(round(Int,0.1*mean(sz)))
 	buff = round(Int,0.025*mean(sz))
