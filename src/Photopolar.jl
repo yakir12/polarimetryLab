@@ -79,13 +79,16 @@ function convert2polar(x::SharedArray{UInt16,3})
 	aop = zeros(Int,sz)
 	docp = zeros(Int,sz)
 	m = zeros(6)
+	testing = 0
 	for i = 1:prod(sz)
 		for j = 1:6
 			m[j] = (x[j,i] + 1.)/(typemax(UInt16) + 1.)
 		end
 		p = Polar(m[1], m[2], m[3], m[4], m[5], m[6])
+		testing += i
 		I[i], dolp[i], aop[i], docp[i] = normalize(p)
 	end
+	println(testing)
 	prop = Dict(:spatialorder => ["x","y"], :colorspace => "RGB", :pixelspacing => [1,1])
 	colorbar = repeat(reshape(collect(round(Int,linspace(N,1,sz[2]))),1,sz[2]),outer = [round(Int,0.1sz[1]),1])
 	row,col,ind = colorwheel(round(Int,0.1*mean(sz)))
@@ -101,28 +104,3 @@ function convert2polar(x::SharedArray{UInt16,3})
 end
 
 
-#=getpath() = "/home/yakir/Documents/Projects/Stomatopod/circularBehavior/polarimetry/raw/lizardCalibration4"
-path = getpath()
-fnames = getfnames(path)
-@async write_originalRGB(fnames[1])
-getopt() = (true, false, 7, 90, 82, 2, 3, 25)
-opts = getopt()
-@sync x = get_data(opts,fnames)
-I, dolp, aop, docp = convert2polar(x);
-
-		colorimg = imread("$assets/RGB.jpg")
-		aopimg = convert(Image, aop)
-		Iimg = convert(Image,I)
-		dolpimg = convert(Image,dolp)
-		docpimg = convert(Image,docp)
-		buff = round(Int,0.05*mean(widthheight(colorimg)))
-		buffimg = Iimg[1:buff,:]
-		buffimg[:] = RGB{U8}(1,1,1)
-		img = cat(1,colorimg, buffimg, Iimg, buffimg, dolpimg, buffimg, aopimg, buffimg, docpimg) 
-		name = string(abs(rand(Int)))
-		imwrite(img, "$assets/$name.jpg")
-
-		map(x -> println(size(x)), (colorimg, Iimg, dolpimg, aop, docpimg)) 
-
-		img = cat(1,colorimg, Iimg, dolpimg, aop, docpimg) 
-		imwrite(img, "$assets/all.jpg")=#
