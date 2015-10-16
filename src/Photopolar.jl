@@ -1,83 +1,127 @@
-module Photopolar
-
-#export path2pol
-using Light, Images
-@everywhere function imread(fname::AbstractString,sz::Tuple{Int,Int})
-	stream, _ = open(`dcraw -w -H 0 -o 0 -h -4 -c $fname`) 
-	x = read(stream, UInt16, 3, sz...)
-	#return x[1,:,:]
-	y = zeros(UInt16, 1, sz...)
-	for i in eachindex(y), j = 1:3
-		y[i] += round(UInt16, x[j,i]/3)
-	end
-	return y
+if nprocs() < 6
+	addprocs(6)
 end
-function loaddata{T <: AbstractString}(fnames::Vector{T},sz::Tuple{Int,Int})
-	data = SharedArray(UInt16,6,sz...)
-	@sync @parallel for i = 1:6
-		data[i,:,:] = imread(fnames[i],sz)
-	end
-	return data
-end
+using Light, Images, Colors
+assets = "assets"
+N = 300
 function getfnames(path::AbstractString)
 	files = readdir(path)
 	filter!(r".*\.NEF",files)
 	return map(x -> joinpath(path,x), files)
 end
-getsz(fname::AbstractString) = (map(x -> round(Int,parse(Int,x)/2),split(split(readall(`dcraw -i -v $fname`),'\n')[14])[[3,5]])...)
-getRGB(fname::AbstractString) = @spawn run(pipeline(`dcraw -w -H 0 -o 0 -h -c $fname`,`convert - -auto-level RGB0.jpg`))
-function convert2polar(data::SharedArray{UInt16,3},sz::Tuple{Int,Int})
-	I = zeros(sz)
-	dolp = zeros(sz)
-	aop = zeros(sz)
-	dolcp = zeros(sz)
-	dorcp = zeros(sz)
+write_originalRGB(fname::AbstractString) = run(pipeline(`dcraw -w -H 0 -o 0 -h -c $fname`,`convert - -auto-level originalRGB.jpg`))
+getsz(fname::AbstractString) = map(x -> parse(Int,x),split(readall(`identify -ping -format '%w %h' $fname`)))
+function build_opt(SZ,flip, flop, rotate, cropright, cropbottom, cropleft, croptop, scale)
+	toflip = flip ? `-flip` : ``
+	toflop = flop ? `-flop` : ``
+	sz = SZ*scale/100
+	w0 = sz[1]*cosd(rotate) +  sz[2]*cosd(90 - abs(rotate))
+	w = round(Int, w0*cropright/100)
+	h0 = sz[1]*sind(abs(rotate)) +  sz[2]*sind(90 - abs(rotate))
+	h = round(Int, h0*cropbottom/100)
+	x = round(Int, w0*cropleft/100)
+	y = round(Int, h0*croptop/100)
+	return `-scale $scale% $toflip $toflop -rotate $rotate +repage -crop $(w)x$h+$x+$y`
+end
+writeRGB(opt::Cmd,name::AbstractString) = run(`convert originalRGB.jpg $opt $assets/$name.jpg`)
+@everywhere function myimread(fname::AbstractString,sz::Vector{Int},opt::Cmd)
+	stream, _ = open(pipeline(`dcraw -w -H 0 -o 0 -h -4 -c $fname`,`convert - $opt -colorspace Gray  Gray:-`)) 
+	read(stream, UInt16, 1, sz...)
+end
+function loaddata{T <: AbstractString}(fnames::Vector{T},sz::Vector{Int},opt::Cmd)
+	x = SharedArray(UInt16,6,sz...)
+	@parallel for i = 1:6
+		x[i,:,:] = myimread(fnames[i],sz,opt)
+	end
+	return x
+end
+function get_data{T <: AbstractString}(opts,fnames::Vector{T})
+	@sync SZ = getsz("originalRGB.jpg")
+	opt = build_opt(SZ,opts...)
+	writeRGB(opt,"RGB")
+	sz = getsz("$assets/RGB.jpg")
+	loaddata(fnames,sz,opt)
+end
+roundit(x::Float64) = round(Int, x*(N - 1) + 1)
+function normalize(p::Polar)
+	if isnan(p.I)
+		return (1,1,1,1)
+	else
+		I = p.I > 1 ? N : roundit(p.I)
+		dolp = p.dolp > 1 ? N : roundit(p.dolp)
+		aop = roundit(p.aop/pi + 0.5)
+		tmp = (p.docp + 1)/2
+		docp = tmp < 0 ? 1 : tmp > 1 ? N : roundit(tmp)
+	end
+	return (I,dolp,aop,docp)
+end
+function colorwheel(r::Int)
+	row = Int[]
+	col = Int[]
+	ind = Int[]
+	r2 = r*r
+	for i in -r:r, j in -r:r
+		if i*i + j*j <= r2
+			push!(row,i + r + 1)
+			push!(col,j + r + 1)
+			tmp = atan2(j,i)/pi
+			a = tmp > 0 ? roundit(tmp) : roundit(1 + tmp)
+			push!(ind,a)
+		end
+	end
+	return (row,col,ind)
+end
+function convert2polar(x::SharedArray{UInt16,3})
+	sz = size(x,2,3)
+	I = zeros(Int,sz)
+	dolp = zeros(Int,sz)
+	aop = zeros(Int,sz)
+	docp = zeros(Int,sz)
 	m = zeros(6)
 	for i = 1:prod(sz)
 		for j = 1:6
-			m[j] = (data[j,i] + 1.)/(typemax(UInt16) + 1.)
+			m[j] = (x[j,i] + 1.)/(typemax(UInt16) + 1.)
 		end
-		p = Polar(m...)
-		I[i] = p.I > 1 ? 1.0 : isnan(p.I) ? 0.0 : p.I
-		dolp[i] = p.dolp > 1 ? 1.0 : isnan(p.dolp) ? 0.0 : p.dolp
-		aop[i] = isnan(p.aop) ? 0.0 : (p.aop + pi/2)/pi
-		if p.docp < 0
-			dolcp[i] = p.docp < -1 ? 1.0 : -p.docp
-			dorcp[i] = 0.0
-		elseif p.docp >= 0
-			dolcp[i] = 0.0
-			dorcp[i] = p.docp > 1 ? 1.0 : p.docp
-		else
-			dolcp[i] = 0.0
-			dorcp[i] = 0.0
-		end
+		p = Polar(m[1], m[2], m[3], m[4], m[5], m[6])
+		I[i], dolp[i], aop[i], docp[i] = normalize(p)
 	end
-	img = grayim(I)
-	@async imwrite(img,"I0.jpg")
-	img = restrict(restrict(img))
-	@async imwrite(img,"I.jpg")
-	img = grayim(dolp)
-	@async imwrite(img,"dolp0.jpg")
-	img = restrict(restrict(img))
-	@async imwrite(img,"dolp.jpg")
-	img = grayim(aop)
-	@async imwrite(img,"aop0.jpg")
-	img = grayim(dolcp)
-	@async imwrite(img,"dolcp0.jpg")
-	img = restrict(restrict(img))
-	@async imwrite(img,"dolcp.jpg")
-	img = grayim(dorcp)
-	@async imwrite(img,"dorcp0.jpg")
-	img = restrict(restrict(img))
-	@async imwrite(img,"dorcp.jpg")
+	prop = Dict(:spatialorder => ["x","y"], :colorspace => "RGB", :pixelspacing => [1,1])
+	colorbar = repeat(reshape(collect(round(Int,linspace(N,1,sz[2]))),1,sz[2]),outer = [round(Int,0.1sz[1]),1])
+	row,col,ind = colorwheel(round(Int,0.1*mean(sz)))
+	buff = round(Int,0.025*mean(sz))
+	for (r,c,i) in zip(row,col,ind)
+		aop[sz[1] - r - buff, c + buff] = i
+	end
+	Iimg = ImageCmap(I, linspace(RGB(0,0,0),RGB(1,1,1),N); prop...)
+	dolpimg = ImageCmap(cat(1,dolp,colorbar),linspace(RGB(0,0,0),RGB(1,1,1),N); prop...)
+	aopimg = ImageCmap(aop,convert(Array{RGB{FixedPointNumbers.UfixedBase{UInt8,8}},1}, linspace(HSV(0,1,1), HSV(360,1,1),N)); prop...)
+	docpimg = ImageCmap(cat(1,docp,colorbar), [linspace(RGB(1,0,0),RGB(0,0,0),Int(N/2)); linspace(RGB(0,0,0), RGB(0,1,0),Int(N/2))]; prop...)
+	return (Iimg, dolpimg, aopimg, docpimg)
+end
 
-end
-function path2pol(path::AbstractString)
-	fnames = getfnames(path)
-	@async getRGB(fnames[1])
-	sz = getsz(fnames[1])
-	data = loaddata(fnames,sz)
-	convert2polar(data,sz)
-end
-	
-end
+
+#=getpath() = "/home/yakir/Documents/Projects/Stomatopod/circularBehavior/polarimetry/raw/lizardCalibration4"
+path = getpath()
+fnames = getfnames(path)
+@async write_originalRGB(fnames[1])
+getopt() = (true, false, 7, 90, 82, 2, 3, 25)
+opts = getopt()
+@sync x = get_data(opts,fnames)
+I, dolp, aop, docp = convert2polar(x);
+
+		colorimg = imread("$assets/RGB.jpg")
+		aopimg = convert(Image, aop)
+		Iimg = convert(Image,I)
+		dolpimg = convert(Image,dolp)
+		docpimg = convert(Image,docp)
+		buff = round(Int,0.05*mean(widthheight(colorimg)))
+		buffimg = Iimg[1:buff,:]
+		buffimg[:] = RGB{U8}(1,1,1)
+		img = cat(1,colorimg, buffimg, Iimg, buffimg, dolpimg, buffimg, aopimg, buffimg, docpimg) 
+		name = string(abs(rand(Int)))
+		imwrite(img, "$assets/$name.jpg")
+
+		map(x -> println(size(x)), (colorimg, Iimg, dolpimg, aop, docpimg)) 
+
+		img = cat(1,colorimg, Iimg, dolpimg, aop, docpimg) 
+		imwrite(img, "$assets/all.jpg")=#
