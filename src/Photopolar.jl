@@ -1,3 +1,4 @@
+push!(LOAD_PATH, pwd())
 if nprocs() < 6
 	addprocs(6)
 end
