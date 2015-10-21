@@ -63,17 +63,18 @@ topdolp = Input(100)
 topdolcp = Input(100)
 topdorcp = Input(100)
 
+fnames = lift(getfnames,path)
 
 directorytab = lift(path) do t
-	fnames = getfnames(t)
-	write_originalRGB(fnames[1])
+	write_originalRGB(value(fnames)[1])
 	vbox(h1("Directory:"),
 		vskip(1em),
 		t,
 		vskip(1em),
 		h1("Files:"),
-		fnames...) |> pad(1em) |> maxwidth(30em)
+		value(fnames)...) |> pad(1em) |> maxwidth(30em)
 end
+
 
 row1 = ["Flip", checkbox(false) >>> flip, "Flop", checkbox(false) >>> flop, button("Done!") >>> torun]
 row2 = ["Rotate", slider(-90:90,value=0) >>> rotate, "Scale", slider(1:100,value=20) >>> scale]
@@ -92,10 +93,10 @@ orientationtab = vbox(map(pad(0.5em),[
 	end,
 	X = consume(torun, typ=Any, init=empty) do trn
 		copyassets()
-		fnames = getfnames(value(path))
 		opts = (value(flip),value(flop),value(rotate),value(cropright),value(cropbottom),value(cropleft),value(croptop),value(scale))
-		@sync x = get_data(opts,fnames)
-		convert2polar(x)
+		@sync x = get_data(opts,value(fnames))
+		I, dolp, aop, docp = data2polar(x)
+		polar2images(I, dolp, aop, docp)
 	end
 	])) 
 
@@ -160,7 +161,6 @@ function main(window)
 	])
 	
 	t, p = wire(tabbar, tabcontent, :tab_channel, :selected)
-	   # ^^^ returns a pair of "connected" tab set and pages
 	vbox(t, p)
 
 

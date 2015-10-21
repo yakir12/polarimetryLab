@@ -4,7 +4,7 @@ if nprocs() < 6
 end
 using Light, Images, Colors
 assets = "assets"
-N = 300
+N = 1000
 function getfnames(path::AbstractString)
 	files = readdir(path)
 	filter!(r".*\.NEF",files)
@@ -26,7 +26,7 @@ function build_opt(SZ,flip, flop, rotate, cropright, cropbottom, cropleft, cropt
 end
 writeRGB(opt::Cmd,name::AbstractString) = run(`convert originalRGB.jpg $opt $assets/$name.jpg`)
 @everywhere function myimread(fname::AbstractString,sz::Vector{Int},opt::Cmd)
-	stream, _ = open(pipeline(`dcraw -w -H 0 -o 0 -h -4 -c $fname`,`convert - $opt -colorspace Gray  Gray:-`)) 
+	stream, _ = open(pipeline(`dcraw -w -H 0 -o 0 -h -4 -c $fname`,`convert - $opt -channel G -separate  Gray:-`)) 
 	read(stream, UInt16, 1, sz...)
 end
 function loaddata{T <: AbstractString}(fnames::Vector{T},sz::Vector{Int},opt::Cmd)
@@ -72,7 +72,7 @@ function colorwheel(r::Int)
 	end
 	return (row,col,ind)
 end
-function convert2polar(x::SharedArray{UInt16,3})
+function data2polar(x::SharedArray{UInt16,3})
 	sz = size(x,2,3)
 	I = zeros(Int,sz)
 	dolp = zeros(Int,sz)
@@ -81,11 +81,15 @@ function convert2polar(x::SharedArray{UInt16,3})
 	m = zeros(6)
 	for i = 1:prod(sz)
 		for j = 1:6
-			m[j] = (x[j,i] + 1.)/(typemax(UInt16) + 1.)
+			m[j] = (x[j,i] + 1)/65536
 		end
 		p = Polar(m[1], m[2], m[3], m[4], m[5], m[6])
 		I[i], dolp[i], aop[i], docp[i] = normalize(p)
 	end
+	return (I, dolp, aop, docp)
+end
+function polar2images(I::Array{Int,2},dolp::Array{Int,2},aop::Array{Int,2},docp::Array{Int,2},)
+	sz = size(I)
 	prop = Dict(:spatialorder => ["x","y"], :colorspace => "RGB", :pixelspacing => [1,1])
 	colorbar = repeat(reshape(collect(round(Int,linspace(N,1,sz[2]))),1,sz[2]),outer = [round(Int,0.1sz[1]),1])
 	row,col,ind = colorwheel(round(Int,0.1*mean(sz)))
