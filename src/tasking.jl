@@ -4,8 +4,10 @@ seabreeze.use("pyseabreeze")
 @pyimport seabreeze.spectrometers as sb
 devices = sb.list_devices()
 S = sb.Spectrometer(devices[1])
+
 const MINIT = 300000#S[:minimum_integration_time_micros]
 S[:integration_time_micros](MINIT)
+
 const MAXY = 2^12 - 1
 const M = 1.1MAXY
 const m = MAXY - M
