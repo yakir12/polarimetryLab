@@ -1,7 +1,7 @@
 module Light
 
 export Polar, Stokes, PolEllipse, rotate, mean, convert, measurements2stokes
-import Base: mean, convert, +, *
+import Base: mean, convert, +, *, /
 
 immutable Stokes{T <: AbstractFloat}
 	s0::T
@@ -16,7 +16,6 @@ immutable Stokes{T <: AbstractFloat}
 	end
 end
 Stokes{T <: AbstractFloat}(s0::T,s1::T,s2::T,s3::T) = Stokes{T}(s0,s1,s2,s3)
-
 
 immutable Polar{T <: AbstractFloat}
 	I::T
@@ -70,12 +69,13 @@ convert(::Type{PolEllipse}, a::Stokes) = PolEllipse(Polar(a))=#
 convert(::Type{Stokes}, a::Polar) = Stokes(a.I, a.dolp*cos(2a.aop)*a.I, a.dolp*sin(2a.aop)*a.I, a.docp*a.I)
 convert(::Type{Polar}, a::Stokes) = Polar(a.s0, sqrt(a.s1*a.s1 + a.s2*a.s2)/a.s0, atan2(a.s2,a.s1)/2, a.s3/a.s0)
 
-*(a::Stokes,b::AbstractFloat) = Stokes(a.s0*b, a.s1*b, a.s2*b, a.s3*b)
+*(a::Stokes,b::Number) = Stokes(a.s0*b, a.s1*b, a.s2*b, a.s3*b)
+/(a::Stokes,b::Number) = Stokes(a.s0/b, a.s1/b, a.s2/b, a.s3/b)
 
 +(a::Stokes,b::Stokes) = Stokes(a.s0 + b.s0, a.s1 + b.s1, a.s2 + b.s2, a.s3 + b.s3)
 
 rotate(a::Polar,b::AbstractFloat) = Polar(a.I,a.dolp,a.aop + b,a.docp)
-rotate(a::Stokes,b::AbstractFloat) = Stokes(rotate(Polar(a),b))
+rotate(a::Stokes,b::Real) = Stokes(rotate(Polar(a),b))
 
 function mean(a::Vector{Polar})
 	I = mean(map(x -> x.I,a))
@@ -94,7 +94,17 @@ function measurements2stokes(ad, v, d, h, r, l)
 	return (s0,s1,s2,s3)
 end
 
-convert(::Type{Stokes}, ad, v, d, h, r, l) = Stokes(measurements2stokes(ad, v, d, h, r, l)...)
-convert(::Type{Polar}, ad, v, d, h, r, l) = Polar(Stokes(ad, v, d, h, r, l))
+function measurements2stokes(ad, v, d, h)
+	s0 = (v + h + d + ad)/2
+	s1 = v - h
+	s2 = d - ad
+	return (s0,s1,s2,zero(s0))
+end
+
+function measurements2stokes(r, l)
+	s0 = r + l
+	s3 = r - l
+	return (s0,zero(s0),zero(s0),s3)
+end
 
 end
