@@ -32,7 +32,7 @@ circular|c   |0            |0       |0       |0         |315              |45
 ## Photopolar
 This program computes photopolarimetry.
 
-**Outline** The program takes filtered images (i.e. anti-diagonal, vertical, diagonal, horizontal, lefthand circular, and righthand circular) and produces four polarization images that describe the intensity, degree of linear polarization, angle of polarization, and degree of circular polarization. The porgram generates the polarization receptor activity (see [Polarization distance: a framework for modelling object detection by polarization vision systems](http://rspb.royalsocietypublishing.org/content/281/177)) as well as a polarization ellipse representation of the image (see [Biologically inspired representation of photopolarimetric data using the polarization ellipse]()).
+**Outline** The program takes filtered images (i.e. anti-diagonal, vertical, diagonal, horizontal, lefthand circular, and righthand circular) and produces four polarization images that describe the intensity, degree of linear polarization, angle of polarization, and degree of circular polarization. The porgram generates the polarization receptor activity (see [Polarization distance: a framework for modelling object detection by polarization vision systems](http://rspb.royalsocietypublishing.org/content/281/1776/20131632)) as well as a polarization ellipse representation of the image (see [Biologically inspired representation of photopolarimetric data using the polarization ellipse]()).
 
 ### Instructions
 * Photograph your subject through the following filters in the following order: anti-diagonal, vertical, diagonal, horizontal, and if you want circular polarization as well: lefthand circular, and righthand circular. 
