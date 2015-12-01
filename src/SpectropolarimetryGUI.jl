@@ -68,7 +68,11 @@ consume(dark, typ=Any, init=empty) do i
 	end
 end
 consume(quit, typ=Any, init=empty) do _
-	run(`pkill chromium` & `pkill julia`)
+	pid = readchomp("spectropolarimetry.pid")
+	try 
+		run(`kill $pid`)
+	catch
+	end
 end
 
 
