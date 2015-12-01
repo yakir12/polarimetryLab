@@ -38,7 +38,7 @@ This program computes photopolarimetry.
 * Photograph your subject through the following filters in the following order: anti-diagonal, vertical, diagonal, horizontal, and if you want circular polarization as well: lefthand circular, and righthand circular. 
 * For the best results use the D300 Nikon with the filter rings attached to the lens. 
 * You have to save the images in raw format (e.g. `NEF`)
-* Navigate to [here](http://localhost:5555/photoPolar.jl).
+* Navigate to [here](http://localhost:5555/photoPolarGUI.jl).
 * You'll get a navigation window: navigate to where the folder with all the raw images are.
 * Manipulate (rotate, flip, flop, crop, etc.) your image to include only what you want.
 * Press `Done`.
