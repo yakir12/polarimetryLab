@@ -37,6 +37,9 @@ This program computes photopolarimetry.
 ### Instructions
 * Photograph your subject through the following filters in the following order: anti-diagonal, vertical, diagonal, horizontal, and if you want circular polarization as well: lefthand circular, and righthand circular. 
 * For the best results use the D300 Nikon with the filter rings attached to the lens. 
+![](images/overview.jpg?raw=true)
+![](images/closeup1.jpg?raw=true)
+![](images/closeup2.jpg?raw=true)
 * You have to save the images in raw format (e.g. `NEF`)
 * Navigate to [here](http://localhost:5555/photoPolarGUI.jl).
 * You'll get a navigation window: navigate to where the folder with all the raw images are.
@@ -45,3 +48,6 @@ This program computes photopolarimetry.
 * After a few seconds the results will be in the other tabs.
 * You can save the photopolarimetry images from the browser (with `Save image as...`).
 * The polarization ellipse image can also be saved in the same way, but the much higher quality PDF file is in `polar/src`.
+
+
+
