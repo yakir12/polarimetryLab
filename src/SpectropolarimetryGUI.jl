@@ -1,10 +1,17 @@
-function startit(_)
-		pid = readchomp("spectropolarimetry.pid")
-		try 
-			run(`kill $pid`)
-		catch
+ispid(pid::String) = !isempty(readall(pipeline(`ps aux`, `awk '{print $2 }'`)) |> txt -> search(txt, pid))
+function cleanpid(file::String)
+	name, ext = splitext(file)
+	if ext == ".pid"
+		if ispid(name)
+			run(`kill $name`)
 		end
-	@async run(`julia --startup-file=no Spectropolarimetry.jl`) 
+		rm(file)
+	end
+end
+closeall(_) = map(cleanpid,readdir())
+function startit(_)
+	closeall(_)
+	@async run(`x-terminal-emulator -e 'julia --startup-file=no Spectropolarimetry.jl'`) 
 end
 
 it = Input(3000)
@@ -67,14 +74,7 @@ consume(dark, typ=Any, init=empty) do i
 		print(o,"dark")
 	end
 end
-consume(quit, typ=Any, init=empty) do _
-	pid = readchomp("spectropolarimetry.pid")
-	try 
-		run(`kill $pid`)
-	catch
-	end
-end
-
+lift(closeall, quit, typ=Any, init=empty)
 
 
 function main(window)

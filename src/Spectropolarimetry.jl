@@ -1,10 +1,12 @@
+touch(string(getpid(),".pid"))
 push!(LOAD_PATH, pwd())
-using Winston, PyCall, Reactive, DataFrames, Light
+using UnicodePlots, PyCall, Reactive, DataFrames, Light
 @pyimport seabreeze
 seabreeze.use("pyseabreeze")
 @pyimport seabreeze.spectrometers as sb
 devices = sb.list_devices()
 s = sb.Spectrometer(devices[1])
+maxy = s[:_dev][:interface][:_MAX_PIXEL_VALUE]
 wl = s[:wavelengths]()
 nwl = length(wl)
 function watchit()
@@ -23,18 +25,17 @@ end
 it = Channel{Int}(1)
 nr = Channel{Int}(1)
 put!(nr,1)
-sp = Channel{String}(1)
+sp = Channel{AbstractString}(1)
 yy = Input(wl)
 X = DataFrame(wl = wl, l315c0 = zeros(nwl), l0c0 = zeros(nwl), l45c0 = zeros(nwl), l90c0 = zeros(nwl), l0c315 = zeros(nwl), l0c45 = zeros(nwl), dark = zeros(nwl), I = zeros(nwl), dolp = zeros(nwl), aop = zeros(nwl), docp = zeros(nwl))
 writetable("data.csv", X)
 
-@async map(run, [`pdflatex plot.tex`, `evince plot.pdf`])
+@async map(readall, [`pdflatex plot.tex`, `evince plot.pdf`])
 
 function plotit(y)
-	p = plot(wl,y)
-	ylim(0,4500)
+	p = scatterplot(wl,y,xlim=[300,800],ylim=[0,maxy])
 	display(p)
-	sleep(0)
+	sleep(0.07)
 end
 lift(plotit,yy)
 function draw()
@@ -43,11 +44,11 @@ function draw()
 		p = Polar(Stokes(s0[i], s1[i], s2[i], s3[i]))
 		X[i,:I] = p.I
 		X[i,:dolp] = p.dolp
-		X[i,:aop] = p.aop
+		X[i,:aop] = rad2deg(p.aop)
 		X[i,:docp] = p.docp
 	end
 	writetable("data.csv", X)
-	run(`pdflatex plot.tex`)
+	readall(`pdflatex plot.tex`)
 end
 function iter()
 	wait(nr)
@@ -91,9 +92,6 @@ end
 	end
 end
 
-open("spectropolarimetry.pid","w") do o
-	print(o,getpid())
-end
 
 sleep(60*60*24)
 
