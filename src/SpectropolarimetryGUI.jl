@@ -82,7 +82,7 @@ function main(window)
 
 	vbox(
 	hbox("Number of scans to average", slider(1:100, value=1) >>> nr),
-	hbox("Integration time (micro seconds)", slider(3000:1000000, value=3000) >>> it),
+	hbox("Integration time (micro seconds)", slider(3_000:60_000_000, value=3000) >>> it),
 	hbox(button("l315c0") >>> l315c0 |> fillcolor("#eeb"), button("l0c0") >>> l0c0 |> fillcolor("#eeb"), button("l45c0") >>> l45c0 |> fillcolor("#eeb"), button("l90c0") >>> l90c0 |> fillcolor("#eeb"), button("l0c315") >>> l0c315 |> fillcolor("#859"), button("l0c45") >>> l0c45 |> fillcolor("#859"), button("dark") >>> dark |> fillcolor("#875"), button("Quit") >>> quit |> fillcolor("#f75"),button("Refresh") >>> refresh |> fillcolor("#f75"))
 	)
 end
