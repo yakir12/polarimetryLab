@@ -10,7 +10,7 @@ const prop = Dict(:spatialorder => ["x","y"], :colorspace => "RGB", :pixelspacin
 
 function getfnames(path::AbstractString)
 	files = readdir(path)
-	filter!(r"^[^\.].*\.NEF$",files)
+	filter!(r"^[^\.].*\.(?:NEF|CR2)$",files)
 	@assert length(files) == 4 || length(files) == 6
 	return map(x -> joinpath(path,x), files)
 end

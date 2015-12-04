@@ -1,6 +1,6 @@
 module Light
 
-export Polar, Stokes, PolEllipse, rotate, mean, convert, measurements2stokes
+export Polar, Stokes, PolEllipse, rotate, mean, convert, measurements2stokes, stokes2polar
 import Base: mean, convert, +, *, /
 
 immutable Stokes{T <: AbstractFloat}
@@ -9,7 +9,7 @@ immutable Stokes{T <: AbstractFloat}
 	s2::T
 	s3::T
 	function Stokes(s0,s1,s2,s3)
-		if (s0 < 0) || (s1*s1 + s2*s2 + s3*s3 > 2s0*s0) 
+		if (s0 < 0) || (s1*s1 + s2*s2 + s3*s3 > s0*s0) 
 			s0 = s1 = s2 = s3 = T(NaN)
 		end
 		new(s0,s1,s2,s3)
@@ -23,7 +23,7 @@ immutable Polar{T <: AbstractFloat}
 	aop::T
 	docp::T
 	function Polar(I,dolp,aop,docp)
-		if (I < 0) || (dolp*dolp + docp*docp > 2)
+		if (I < 0) || (dolp*dolp + docp*docp > 1)
 			I = dolp = aop = docp = T(NaN)
 		end
 		new(I,dolp,aop,docp)
@@ -106,5 +106,8 @@ function measurements2stokes(r, l)
 	s3 = r - l
 	return (s0,zero(s0),zero(s0),s3)
 end
+
+stokes2polar(s0, s1, s2, s3) = (s0, sqrt(s1*s1 + s2*s2)/s0, atan2(s2,s1)/2, s3/s0)
+
 
 end

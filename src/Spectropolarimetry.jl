@@ -38,14 +38,20 @@ function plotit(y)
 	sleep(0.07)
 end
 lift(plotit,yy)
+function normalize(I, dolp, aop, docp)
+	I = I < 0 ? 0.0 : I > 10maxy ? 10maxy : I
+	dolp = dolp < 0 ? 0.0 : dolp > 2 ? 2.0 : dolp
+	docp = docp < -2 ? -2.0 : docp > 2 ? 2.0 : docp
+	return (I, dolp, aop, docp)
+end
 function draw()
 	s0, s1, s2, s3 = measurements2stokes(X[:l315c0] - X[:dark], X[:l0c0] - X[:dark], X[:l45c0] - X[:dark], X[:l90c0] - X[:dark], X[:l0c315] - X[:dark], X[:l0c45] - X[:dark])
 	for i = 1:nwl
-		p = Polar(Stokes(s0[i], s1[i], s2[i], s3[i]))
-		X[i,:I] = p.I
-		X[i,:dolp] = p.dolp
-		X[i,:aop] = rad2deg(p.aop)
-		X[i,:docp] = p.docp
+		I, dolp, aop, docp = normalize(stokes2polar(s0[i], s1[i], s2[i], s3[i])...)
+		X[i,:I] = I
+		X[i,:dolp] = dolp
+		X[i,:aop] = rad2deg(aop)
+		X[i,:docp] = docp
 	end
 	writetable("data.csv", X)
 	readall(`pdflatex plot.tex`)

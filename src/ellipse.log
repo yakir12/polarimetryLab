@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.11.11)  2 DEC 2015 10:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.11.11)  4 DEC 2015 15:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -572,24 +572,25 @@ e
 Package pgfplots notification 'compat/show suggested version=true': document ha
 s been generated with the most recent feature set (\pgfplotsset{compat=1.12}).
 
-(./ellipse.tikz <RGB.jpg, id=4, 288.07625pt x 433.62pt>
+(./ellipse.tikz <RGB.jpg, id=4, 1061.9675pt x 705.63625pt>
 File: RGB.jpg Graphic file (type jpg)
  <use RGB.jpg>
 Package pdftex.def Info: RGB.jpg used on input line 4.
-(pdftex.def)             Requested size: 216.06543pt x 325.22743pt.
-) [1
+(pdftex.def)             Requested size: 796.48987pt x 529.22589pt.
+)
+[1
 
  <./RGB.jpg>] (./ellipse.aux) ) 
 Here is how much of TeX's memory you used:
- 21643 strings out of 493054
- 564206 string characters out of 6134765
- 4716850 words of memory out of 9663476
- 24821 multiletter control sequences out of 15000+600000
+ 21440 strings out of 493054
+ 559944 string characters out of 6134765
+ 4818335 words of memory out of 9764961
+ 24618 multiletter control sequences out of 15000+600000
  3640 words of font info for 14 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  59i,10n,103p,728b,2254s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on ellipse.pdf (1 page, 41273 bytes).
+Output written on ellipse.pdf (1 page, 162907 bytes).
 PDF statistics:
  12 PDF objects out of 1000 (max. 8388607)
  7 compressed objects within 1 object stream
