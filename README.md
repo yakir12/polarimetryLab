@@ -42,7 +42,7 @@ This program computes photopolarimetry.
 ![](images/closeup2.jpg?raw=true)
 * You have to save the images in raw format (e.g. `NEF`)
 * Navigate to [here](http://localhost:5555/photoPolarGUI.jl).
-* You'll get a navigation window: navigate to where the folder with all the raw images are.
+* You'll get a navigation window: choose the folder with all the raw images.
 * Manipulate (rotate, flip, flop, crop, etc.) your image to include only what you want.
 * Press `Done`.
 * After a few seconds the results will be in the other tabs.
