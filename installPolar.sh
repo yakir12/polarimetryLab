@@ -90,7 +90,7 @@ exit
 sudo apt-get install libmagickwand5
 sudo apt-get install tcl8.5
 sudo apt-get install cmake
-julia -e 'map(Pkg.add, ["ImageMagick", "Winston", "PyCall", "Images", "Colors", "Reactive", "Escher", "ImageView", "Tk"])'
+julia -e 'map(Pkg.add, ["ImageMagick", "Winston", "PyCall", "Images", "Colors", "Reactive", "Escher", "ImageView", "Tk", "UnicodePlots"])'
 julia -e 'Pkg.update()'
 
 # Escher
