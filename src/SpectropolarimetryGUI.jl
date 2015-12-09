@@ -14,7 +14,7 @@ function startit(_)
 	@async run(`x-terminal-emulator -e 'julia --startup-file=no Spectropolarimetry.jl'`) 
 end
 
-it = Input(3000)
+it = Input(3)
 nr = Input(1)
 refresh = Input{Any}(leftbutton)
 l315c0 = Input{Any}(leftbutton)
