@@ -1,4 +1,4 @@
-const OFFSET = 0.0 # offset in degrees!!!!
+const OFFSET = 100.0 # offset in degrees!!!!
 touch(string(getpid(),".pid"))
 push!(LOAD_PATH, pwd())
 using UnicodePlots, PyCall, Reactive, DataFrames, Light
@@ -49,7 +49,11 @@ function normalize(I, dolp, aop, docp)
 	return (I, dolp, aop, docp)
 end
 function draw()
-	s0, s1, s2, s3 = measurements2stokes(X[:l315c0] - X[:dark], X[:l0c0] - X[:dark], X[:l45c0] - X[:dark], X[:l90c0] - X[:dark], X[:l0c315] - X[:dark], X[:l0c45] - X[:dark])
+	if any(map(Bool,X[:l0c315])) && any(map(Bool,X[:l0c45]))
+		s0, s1, s2, s3 = measurements2stokes(X[:l315c0] - X[:dark], X[:l0c0] - X[:dark], X[:l45c0] - X[:dark], X[:l90c0] - X[:dark], X[:l0c315] - X[:dark], X[:l0c45] - X[:dark])
+	else
+		s0, s1, s2, s3 = measurements2stokes(X[:l315c0] - X[:dark], X[:l0c0] - X[:dark], X[:l45c0] - X[:dark], X[:l90c0] - X[:dark])
+	end
 	for i = 1:nwl
 		I, dolp, aop, docp = normalize(stokes2polar(s0[i], s1[i], s2[i], s3[i])...)
 		X[i,:I] = I
