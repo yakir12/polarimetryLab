@@ -1,3 +1,4 @@
+const OFFSET = 0.0 # offset in degrees!!!!
 touch(string(getpid(),".pid"))
 push!(LOAD_PATH, pwd())
 using UnicodePlots, PyCall, Reactive, DataFrames, Light
@@ -50,7 +51,7 @@ function draw()
 		I, dolp, aop, docp = normalize(stokes2polar(s0[i], s1[i], s2[i], s3[i])...)
 		X[i,:I] = I
 		X[i,:dolp] = dolp
-		X[i,:aop] = rad2deg(aop)
+		X[i,:aop] = rad2deg(aop) + OFFSET
 		X[i,:docp] = docp
 	end
 	writetable("data.csv", X)

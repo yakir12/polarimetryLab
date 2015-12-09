@@ -15,7 +15,7 @@ This program computes spcetropolarimetry.
 * Wait a minute or two (you'll see a live output of the spectrometer and a pdf file with the (for now, empty) polarization curves).
 * Input the desired integration time in micro seconds.
 * Make sure you set an integration time such that the maximum possible value in the wavelength interval of interest is not saturated but isn't too low either (play with the Glan–Thompson and Fresnel rhomb to make sure the integration time is not too high). 
-* Input the number of spectra to average: as many as you have patience for (depends on the integration time).
+* Input the number of spectra to average: as many as you have patience for (depends on the integration time). OBS: if the signal you are measuring is flickering, make sure you average multiple spectra to avoid a sample of when the signal is off (or dimmed). This is important with screen, fluorescent lamps, etc.
 * Set the linear (l) dial and the circular (c) dial according to the prompt (see table below). 
 
 dial    |code|anti-diagonal|vertical|diagonal|horizontal|lefthand circular|righthand circular
