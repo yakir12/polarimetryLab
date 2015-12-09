@@ -1,5 +1,5 @@
-ispid(pid::String) = !isempty(readall(pipeline(`ps aux`, `awk '{print $2 }'`)) |> txt -> search(txt, pid))
-function cleanpid(file::String)
+ispid(pid::AbstractString) = !isempty(readall(pipeline(`ps aux`, `awk '{print $2 }'`)) |> txt -> search(txt, pid))
+function cleanpid(file::AbstractString)
 	name, ext = splitext(file)
 	if ext == ".pid"
 		if ispid(name)

@@ -12,15 +12,18 @@ wl = s[:wavelengths]()
 nwl = length(wl)
 function watchit()
 	watch_file("integrationtime")
+	sleep(.1)
 	put!(it, parse(Int,readchomp("integrationtime")))
 end
 function watchnr()
 	watch_file("nreplicates")
+	sleep(.1)
 	take!(nr)
 	put!(nr, parse(Int,readchomp("nreplicates")))
 end
 function watchr()
 	watch_file("rotation")
+	sleep(.1)
 	put!(sp, readchomp("rotation"))
 end
 it = Channel{Int}(1)
